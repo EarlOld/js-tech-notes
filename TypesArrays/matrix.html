@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Array vs Float32Array Benchmark</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 2rem;
+      }
+      button {
+        margin: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+      }
+      pre {
+        background: #111;
+        color: #0f0;
+        padding: 1rem;
+        margin-top: 1rem;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔬 Benchmark: Array vs Float32Array</h1>
+    <button onclick="testArray()">▶️ Benchmark Array</button>
+    <button onclick="testTypedArray()">▶️ Benchmark Float32Array</button>
+
+    <pre id="output">Waiting for input...</pre>
+
+    <script>
+      const output = document.getElementById("output");
+      const size = 10000;
+
+      function log(msg) {
+        output.textContent += `\n${msg}`;
+      }
+
+      const sumMatrixCPU = (a, b, size) => {
+        let sum = 0;
+        for (let i = 0; i < size; i++) {
+          sum += a[i] * b[i];
+        }
+        return sum;
+      };
+
+      function testArray() {
+        const A = new Array(size).fill(Math.random() * 100);
+        const B = new Array(size).fill(Math.random() * 100);
+        const t0 = performance.now();
+
+        const sum = sumMatrixCPU(A, B, size);
+        const t1 = performance.now();
+        log(`Array multiply done in ${(t1 - t0).toFixed(2)} ms, sum: ${sum}`);
+      }
+
+      function testTypedArray() {
+        const A = new Float32Array(size).fill(Math.random() * 100);
+        const B = new Float32Array(size).fill(Math.random() * 100);
+        const t0 = performance.now();
+        const sum = sumMatrixCPU(A, B, size);
+        const t1 = performance.now();
+        log(
+          `Float32Array multiply done in ${(t1 - t0).toFixed(
+            2
+          )} ms, sum: ${sum}`
+        );
+      }
+    </script>
+  </body>
+</html>
