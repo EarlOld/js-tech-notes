@@ -31,41 +31,71 @@
 
     <script>
       const output = document.getElementById("output");
-      const size = 10000;
+      const size = 1024;
 
       function log(msg) {
         output.textContent += `\n${msg}`;
       }
 
-      const sumMatrixCPU = (a, b, size) => {
-        let sum = 0;
+      function clearLog() {
+        output.textContent = "";
+      }
+
+      // Matrix multiplication for 2D arrays
+      function multiplyArray(A, B, size) {
+        const result = Array.from({ length: size }, () => Array(size).fill(0));
         for (let i = 0; i < size; i++) {
-          sum += a[i] * b[i];
+          for (let j = 0; j < size; j++) {
+            let sum = 0;
+            for (let k = 0; k < size; k++) {
+              sum += A[i][k] * B[k][j];
+            }
+            result[i][j] = sum;
+          }
         }
-        return sum;
-      };
+        return result;
+      }
+
+      // Matrix multiplication for flat Float32Arrays
+      function multiplyTypedArray(A, B, C, size) {
+        for (let i = 0; i < size; i++) {
+          for (let j = 0; j < size; j++) {
+            let sum = 0;
+            for (let k = 0; k < size; k++) {
+              sum += A[i * size + k] * B[k * size + j];
+            }
+            C[i * size + j] = sum;
+          }
+        }
+      }
 
       function testArray() {
-        const A = new Array(size).fill(Math.random() * 100);
-        const B = new Array(size).fill(Math.random() * 100);
+        const A = Array.from({ length: size }, () =>
+          Array.from({ length: size }, () => Math.random() * 1000)
+        );
+        const B = Array.from({ length: size }, () =>
+          Array.from({ length: size }, () => Math.random() * 1000)
+        );
+        log("Starting Array × Array multiplication...");
         const t0 = performance.now();
-
-        const sum = sumMatrixCPU(A, B, size);
+        const C = multiplyArray(A, B, size);
         const t1 = performance.now();
-        log(`Array multiply done in ${(t1 - t0).toFixed(2)} ms, sum: ${sum}`);
+        log(`Array × Array done in ${(t1 - t0).toFixed(2)} ms`);
       }
 
       function testTypedArray() {
-        const A = new Float32Array(size).fill(Math.random() * 100);
-        const B = new Float32Array(size).fill(Math.random() * 100);
+        const A = new Float32Array(size * size);
+        const B = new Float32Array(size * size);
+        const C = new Float32Array(size * size);
+        for (let i = 0; i < size * size; i++) {
+          A[i] = Math.random();
+          B[i] = Math.random();
+        }
+        log("Starting Float32Array × Float32Array multiplication...");
         const t0 = performance.now();
-        const sum = sumMatrixCPU(A, B, size);
+        multiplyTypedArray(A, B, C, size);
         const t1 = performance.now();
-        log(
-          `Float32Array multiply done in ${(t1 - t0).toFixed(
-            2
-          )} ms, sum: ${sum}`
-        );
+        log(`Float32Array × Float32Array done in ${(t1 - t0).toFixed(2)} ms`);
       }
     </script>
   </body>
