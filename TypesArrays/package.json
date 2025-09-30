@@ -1,0 +1,11 @@
+{
+  "name": "typesarrays",
+  "version": "1.0.0",
+  "description": "Typed Arrays in JavaScript provide a way to work with binary data in a more efficient manner than traditional arrays. They are particularly useful for handling large amounts of data, such as in graphics programming, audio processing, and other performance-critical applications.",
+  "main": "matrix-multiplication.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
